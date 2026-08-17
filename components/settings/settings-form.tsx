@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 export function SettingsForm() {
-  const [displayName, setDisplayName] = useState("管理者 山田");
+  const [displayName, setDisplayName] = useState("管理者 平木");
   const [email, setEmail] = useState("yamada@genba-map.jp");
 
   return (
@@ -33,7 +33,7 @@ export function SettingsForm() {
           </div>
           <div className="flex flex-col">
             <p className="text-sm font-medium leading-5 text-[#101828]">
-              管理者 山田
+              管理者 平木
             </p>
             <p className="pt-0.5 text-xs leading-4 text-[#6a7282]">
               システム管理者
