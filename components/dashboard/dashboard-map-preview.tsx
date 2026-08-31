@@ -5,15 +5,15 @@ import { CircleMarker, MapContainer, TileLayer } from "react-leaflet";
 
 import "leaflet/dist/leaflet.css";
 
-const markers: { position: [number, number]; color: string }[] = [
-  { position: [36.05, 139.52], color: "#ef4444" },
-  { position: [35.0, 136.0], color: "#ef4444" },
-  { position: [38.25, 140.9], color: "#10b981" },
-  { position: [34.75, 137.7], color: "#10b981" },
-  { position: [34.7, 135.3], color: "#ef4444" },
-  { position: [35.45, 139.55], color: "#10b981" },
-  { position: [35.2, 138.9], color: "#f59e0b" },
-  { position: [34.85, 135.5], color: "#f59e0b" },
+const markers: [number, number][] = [
+  [36.05, 139.52],
+  [35.0, 136.0],
+  [38.25, 140.9],
+  [34.75, 137.7],
+  [34.7, 135.3],
+  [35.45, 139.55],
+  [35.2, 138.9],
+  [34.85, 135.5],
 ];
 
 export function DashboardMapPreview() {
@@ -24,14 +24,14 @@ export function DashboardMapPreview() {
   }, []);
 
   if (!ready) {
-    return <div className="h-full min-h-[300px] bg-[#ddd]" />;
+    return <div className="h-full min-h-[360px] bg-muted" />;
   }
 
   return (
     <MapContainer
       center={[36.2, 137.5]}
       zoom={5}
-      className="h-full min-h-[300px] w-full"
+      className="h-full min-h-[360px] w-full"
       scrollWheelZoom={false}
       dragging={false}
       zoomControl={false}
@@ -41,15 +41,15 @@ export function DashboardMapPreview() {
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
-      {markers.map((marker) => (
+      {markers.map((position) => (
         <CircleMarker
-          key={`${marker.position[0]}-${marker.position[1]}-${marker.color}`}
-          center={marker.position}
+          key={`${position[0]}-${position[1]}`}
+          center={position}
           radius={6}
           pathOptions={{
             color: "#ffffff",
-            weight: 2,
-            fillColor: marker.color,
+            weight: 1.5,
+            fillColor: "#1e4e8c",
             fillOpacity: 1,
           }}
         />

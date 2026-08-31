@@ -3,11 +3,17 @@
 import Image from "next/image";
 import { useState } from "react";
 
+import { DriversMaster } from "@/components/settings/drivers-master";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import type { DriverRow } from "@/lib/drivers";
 
-export function SettingsForm() {
+type SettingsFormProps = {
+  drivers: DriverRow[];
+};
+
+export function SettingsForm({ drivers }: SettingsFormProps) {
   const [displayName, setDisplayName] = useState("管理者 平木");
   const [email, setEmail] = useState("yamada@genba-map.jp");
 
@@ -87,6 +93,10 @@ export function SettingsForm() {
             </div>
           </div>
         </div>
+      </div>
+
+      <div className="mt-4">
+        <DriversMaster drivers={drivers} />
       </div>
 
       <div className="mt-4 rounded-[6px] border border-black/10 bg-white p-5">

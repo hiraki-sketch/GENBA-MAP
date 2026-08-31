@@ -1,12 +1,13 @@
 import { DashboardContent } from "@/components/dashboard/dashboard-content";
 import { AppShell } from "@/components/layout/app-shell";
+import { PageCanvas } from "@/components/layout/page-canvas";
 
 export default function Home() {
   return (
     <AppShell>
-      <div className="flex flex-1 flex-col overflow-auto bg-[#f3f4f6]">
+      <PageCanvas>
         <DashboardContent />
-      </div>
+      </PageCanvas>
     </AppShell>
   );
 }

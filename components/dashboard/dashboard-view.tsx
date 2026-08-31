@@ -1,7 +1,5 @@
-import Image from "next/image";
 import Link from "next/link";
 
-import { Badge } from "@/components/ui/badge";
 import {
   Table,
   TableBody,
@@ -22,9 +20,9 @@ type RecentAccident = {
 };
 
 const stats = [
-  { label: "事故総数", value: "47", hint: "累計登録件数" },
-  { label: "今月の事故", value: "6", hint: "2026年8月" },
-  { label: "未対応", value: "3", hint: "要対応件数" },
+  { label: "事故総数", value: "47", hint: "累計登録件数", emphasize: false },
+  { label: "今月の事故", value: "6", hint: "2026年8月", emphasize: false },
+  { label: "未対応", value: "3", hint: "要対応件数", emphasize: true },
 ] as const;
 
 const recentAccidents: RecentAccident[] = [
@@ -60,201 +58,144 @@ const recentAccidents: RecentAccident[] = [
   },
 ];
 
-const statusStyles: Record<
-  AccidentStatus,
-  { className: string; icon: string }
-> = {
-  未対応: {
-    className: "border-[#ffc9c9] bg-[#fef2f2] text-[#c10007]",
-    icon: "/icons/accidents/status-pending.svg",
-  },
-  対応中: {
-    className: "border-[#fee685] bg-[#fffbeb] text-[#bb4d00]",
-    icon: "/icons/accidents/status-in-progress.svg",
-  },
-};
-
 type DashboardViewProps = {
   mapPreview: React.ReactNode;
 };
 
 export function DashboardView({ mapPreview }: DashboardViewProps) {
   return (
-    <div className="mx-auto flex w-full max-w-[1200px] flex-col p-7">
-      <h1 className="text-lg font-semibold leading-7 text-[#101828]">
-        ダッシュボード
-      </h1>
+    <div className="flex flex-col gap-14">
+      <header className="flex flex-col gap-2">
+        <p className="text-[11px] tracking-[0.18em] text-muted-foreground">
+          運用状況
+        </p>
+        <h1 className="text-[28px] font-semibold leading-8 tracking-tight text-foreground">
+          ダッシュボード
+        </h1>
+      </header>
 
-      <div className="mt-6 grid gap-4 sm:grid-cols-3">
-        {stats.map((stat) => (
-          <div
-            key={stat.label}
-            className="rounded-[6px] border border-black/10 bg-white px-5 py-4"
-          >
-            <p className="text-xs leading-4 text-[#6a7282]">{stat.label}</p>
-            <p className="pt-1 font-mono text-[32px] leading-8 font-semibold text-[#101828]">
-              {stat.value}
-            </p>
-            <p className="pt-1 text-[11px] leading-[16.5px] text-[#99a1af]">
-              {stat.hint}
-            </p>
-          </div>
-        ))}
-      </div>
+      <section aria-labelledby="dashboard-metrics">
+        <h2 id="dashboard-metrics" className="sr-only">
+          指標
+        </h2>
+        <div className="grid grid-cols-1 gap-8 sm:grid-cols-3 sm:gap-0">
+          {stats.map((stat, index) => (
+            <div
+              key={stat.label}
+              className={cn(
+                "sm:px-0",
+                index > 0 && "sm:border-l sm:border-border sm:pl-10"
+              )}
+            >
+              <p className="text-[11px] tracking-[0.16em] text-muted-foreground">
+                {stat.label}
+              </p>
+              <p
+                className={cn(
+                  "mt-3 font-mono text-[40px] leading-none font-medium tracking-tight",
+                  stat.emphasize ? "text-primary" : "text-foreground"
+                )}
+              >
+                {stat.value}
+              </p>
+              <p className="mt-3 text-[12px] text-muted-foreground">
+                {stat.hint}
+              </p>
+            </div>
+          ))}
+        </div>
+      </section>
 
-      <div className="mt-5 grid gap-4 lg:grid-cols-5">
-        <div className="overflow-hidden rounded-[6px] border border-black/10 bg-white lg:col-span-3">
-          <div className="flex items-center justify-between border-b border-black/10 px-5 py-3">
-            <h2 className="text-sm font-medium leading-5 text-[#101828]">
+      <section aria-labelledby="dashboard-recent">
+        <div className="mb-5 flex items-baseline justify-between gap-4">
+          <div className="flex flex-col gap-1">
+            <p className="text-[11px] tracking-[0.18em] text-muted-foreground">
+              要対応
+            </p>
+            <h2
+              id="dashboard-recent"
+              className="text-base font-semibold tracking-tight text-foreground"
+            >
               最近の事故
             </h2>
-            <Link
-              href="/accidents"
-              className="inline-flex items-center gap-0.5 text-xs font-medium text-[#6a7282]"
-            >
-              すべて見る
-              <Image
-                src="/icons/dashboard/chevron.svg"
-                alt=""
-                width={12}
-                height={12}
-                className="size-3"
-                unoptimized
-              />
-            </Link>
           </div>
-
-          <Table>
-            <TableHeader>
-              <TableRow className="border-black/10 hover:bg-transparent">
-                <TableHead className="h-9 px-5 text-[11px] font-medium text-[#6a7282]">
-                  発生日
-                </TableHead>
-                <TableHead className="h-9 px-4 text-[11px] font-medium text-[#6a7282]">
-                  発生場所
-                </TableHead>
-                <TableHead className="h-9 px-4 text-[11px] font-medium text-[#6a7282]">
-                  種別
-                </TableHead>
-                <TableHead className="h-9 px-4 text-[11px] font-medium text-[#6a7282]">
-                  状況
-                </TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {recentAccidents.map((accident) => {
-                const status = statusStyles[accident.status];
-
-                return (
-                  <TableRow
-                    key={`${accident.date}-${accident.location}`}
-                    className="border-black/10 hover:bg-transparent"
-                  >
-                    <TableCell className="px-5 py-5 font-mono text-xs text-[#4a5565]">
-                      {accident.date}
-                    </TableCell>
-                    <TableCell className="max-w-[160px] truncate px-4 py-5 text-xs text-[#101828]">
-                      {accident.location}
-                    </TableCell>
-                    <TableCell className="px-4 py-5">
-                      <Badge
-                        variant="outline"
-                        className="h-auto rounded border-[#e5e7eb] bg-[#f3f4f6] px-2 py-0.5 text-xs font-medium text-[#4a5565]"
-                      >
-                        {accident.type}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="px-4 py-5">
-                      <Badge
-                        variant="outline"
-                        className={cn(
-                          "h-auto gap-1 rounded px-2 py-0.5 text-xs font-medium",
-                          status.className
-                        )}
-                      >
-                        <Image
-                          src={status.icon}
-                          alt=""
-                          width={6}
-                          height={11}
-                          className="h-[11px] w-auto"
-                          unoptimized
-                        />
-                        {accident.status}
-                      </Badge>
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
-            </TableBody>
-          </Table>
+          <Link
+            href="/accidents"
+            className="text-[13px] font-medium text-primary"
+          >
+            すべて見る
+          </Link>
         </div>
 
-        <div className="flex min-h-[300px] flex-col overflow-hidden rounded-[6px] border border-black/10 bg-white lg:col-span-2">
-          <div className="flex items-center justify-between border-b border-black/10 px-4 py-3">
-            <h2 className="text-sm font-medium leading-5 text-[#101828]">
+        <Table>
+          <TableHeader>
+            <TableRow className="border-border hover:bg-transparent">
+              <TableHead className="h-10 px-0 text-[11px] font-medium tracking-[0.12em] text-muted-foreground">
+                発生日
+              </TableHead>
+              <TableHead className="h-10 text-[11px] font-medium tracking-[0.12em] text-muted-foreground">
+                発生場所
+              </TableHead>
+              <TableHead className="h-10 text-[11px] font-medium tracking-[0.12em] text-muted-foreground">
+                種別
+              </TableHead>
+              <TableHead className="h-10 pr-0 text-right text-[11px] font-medium tracking-[0.12em] text-muted-foreground">
+                状況
+              </TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {recentAccidents.map((accident) => (
+              <TableRow
+                key={`${accident.date}-${accident.location}`}
+                className="border-border hover:bg-transparent"
+              >
+                <TableCell className="px-0 py-4 font-mono text-[13px] text-muted-foreground">
+                  {accident.date}
+                </TableCell>
+                <TableCell className="max-w-[280px] truncate py-4 text-[13px] text-foreground">
+                  {accident.location}
+                </TableCell>
+                <TableCell className="py-4 text-[13px] text-muted-foreground">
+                  {accident.type}
+                </TableCell>
+                <TableCell
+                  className={cn(
+                    "pr-0 py-4 text-right text-[13px]",
+                    accident.status === "未対応"
+                      ? "font-medium text-primary"
+                      : "text-muted-foreground"
+                  )}
+                >
+                  {accident.status}
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </section>
+
+      <section aria-labelledby="dashboard-map">
+        <div className="mb-5 flex items-baseline justify-between gap-4">
+          <div className="flex flex-col gap-1">
+            <p className="text-[11px] tracking-[0.18em] text-muted-foreground">
+              発生地点
+            </p>
+            <h2
+              id="dashboard-map"
+              className="text-base font-semibold tracking-tight text-foreground"
+            >
               事故発生マップ
             </h2>
-            <Link
-              href="/map"
-              className="inline-flex items-center gap-0.5 text-xs font-medium text-[#6a7282]"
-            >
-              拡大
-              <Image
-                src="/icons/dashboard/expand.svg"
-                alt=""
-                width={10}
-                height={12}
-                className="h-3 w-auto"
-                unoptimized
-              />
-            </Link>
           </div>
-          <div className="min-h-0 flex-1 bg-[#ddd]">{mapPreview}</div>
+          <Link href="/map" className="text-[13px] font-medium text-primary">
+            拡大
+          </Link>
         </div>
-      </div>
-
-      <div className="mt-4 rounded-[6px] border border-black/10 bg-white px-5 py-4">
-        <h2 className="text-[11px] font-medium leading-[16.5px] tracking-[0.55px] text-[#6a7282] uppercase">
-          ユーザー情報
-        </h2>
-        <div className="mt-3 flex items-start gap-4">
-          <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-[#e5e7eb]">
-            <Image
-              src="/icons/dashboard/user.svg"
-              alt=""
-              width={18}
-              height={18}
-              className="size-[18px]"
-              unoptimized
-            />
-          </div>
-          <div className="grid flex-1 gap-8 sm:grid-cols-3">
-            <div>
-              <p className="text-[11px] leading-[16.5px] text-[#6a7282]">
-                表示名
-              </p>
-              <p className="pt-0.5 text-sm leading-5 text-[#101828]">
-                管理者 山田
-              </p>
-            </div>
-            <div>
-              <p className="text-[11px] leading-[16.5px] text-[#6a7282]">
-                メールアドレス
-              </p>
-              <p className="pt-0.5 text-sm leading-5 text-[#101828]">
-                yamada@genba-map.jp
-              </p>
-            </div>
-            <div>
-              <p className="text-[11px] leading-[16.5px] text-[#6a7282]">権限</p>
-              <p className="pt-0.5 text-sm leading-5 text-[#101828]">
-                システム管理者
-              </p>
-            </div>
-          </div>
+        <div className="h-[360px] overflow-hidden border border-border bg-muted">
+          {mapPreview}
         </div>
-      </div>
+      </section>
     </div>
   );
 }

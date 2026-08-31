@@ -11,7 +11,7 @@ const DashboardMapPreview = dynamic(
     ),
   {
     ssr: false,
-    loading: () => <div className="h-full min-h-[300px] bg-[#ddd]" />,
+    loading: () => <div className="h-full min-h-[360px] bg-muted" />,
   }
 );
 

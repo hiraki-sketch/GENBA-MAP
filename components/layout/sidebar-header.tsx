@@ -4,15 +4,12 @@ import { SidebarHeader as ShadcnSidebarHeader } from "@/components/ui/sidebar";
 
 export function SidebarHeader() {
   return (
-    <ShadcnSidebarHeader className="flex-row items-center gap-2.5 p-4">
-      <div className="flex h-[33px] w-7 items-center justify-center rounded bg-sidebar-primary">
-        <MapPin
-          className="size-5 text-sidebar-primary-foreground"
-          strokeWidth={2}
-        />
+    <ShadcnSidebarHeader className="flex-row items-center gap-3 px-5 py-6">
+      <div className="flex size-7 items-center justify-center bg-primary">
+        <MapPin className="size-4 text-primary-foreground" strokeWidth={2} />
       </div>
 
-      <span className="text-sm font-semibold leading-5 tracking-[0.35px] text-sidebar-foreground">
+      <span className="text-[13px] font-semibold tracking-[0.18em] text-foreground">
         GENBA MAP
       </span>
     </ShadcnSidebarHeader>
