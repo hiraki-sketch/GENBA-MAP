@@ -7,7 +7,7 @@ export default async function SettingsPage() {
 
   return (
     <AppShell>
-      <div className="flex flex-1 flex-col overflow-auto bg-[#f3f4f6]">
+      <div className="flex flex-1 flex-col overflow-auto bg-background">
         <SettingsForm drivers={drivers} />
       </div>
     </AppShell>

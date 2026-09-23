@@ -34,8 +34,8 @@ INSERT INTO accidents (
   (
     'ACC-001',
     '2026-07-10',
-    '東名高速道路 海老名SA付近',
-    '追突',
+    '愛媛県 宇和島市 松山交差点',
+    '自損事故',
     NULL,
     ST_SetSRID(ST_MakePoint(139.390000, 35.425000), 4326)::geography,
     '対応済',
@@ -45,8 +45,8 @@ INSERT INTO accidents (
   (
     'ACC-002',
     '2026-07-18',
-    '首都高速3号 用賀IC付近',
-    '接触',
+    '愛媛県 宇和島市 松山交差点',
+    '追突',
     NULL,
     ST_SetSRID(ST_MakePoint(139.550000, 35.450000), 4326)::geography,
     '対応済',

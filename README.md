@@ -2,6 +2,30 @@
 
 物流現場向けアプリケーション
 
+## Better Auth の導入
+
+認証基盤に Better Auth を使用します。`lib/auth.ts` が既存の PostgreSQL
+接続プールを利用し、`/api/auth/*` で認証 API を提供します。
+ブラウザー用クライアントは `lib/auth-client.ts` です。
+
+1. `npm install` を実行します。
+2. `.env.local` に `DATABASE_URL`、`BETTER_AUTH_URL`（ローカルでは
+   `http://localhost:3000`）、`BETTER_AUTH_SECRET` を設定します。
+   秘密鍵は `node -e "console.log(require('node:crypto').randomBytes(32).toString('base64'))"`
+   で生成し、環境ごとに異なる値を設定します。Gitには登録しません。
+3. `npm run db:up`、`npm run db:migrate` を実行します。
+4. `npm run auth:check` でスキーマ、未ログイン状態、公開登録の拒否を確認します。
+
+既存の `users` とUUIDを維持し、`auth_sessions`、`auth_accounts`、
+`auth_verifications` を追加します。パスワードのハッシュはBetter Authが
+`auth_accounts.password` に保存します。既存ユーザーには自動でパスワードを付与しません。
+DBの `role` は既存の「システム管理者」「一般」を維持し、一般配車担当は「一般」に対応します。
+クライアントからの権限指定は受け付けません。
+
+現段階は認証基盤の導入までです。公開の新規登録は無効です。
+初期管理者作成、招待・メール送信、ログイン画面の接続、ページとServer Actionsの
+アクセス制御は後続の実装です。現在の画面はまだ認証で保護されていません。
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started

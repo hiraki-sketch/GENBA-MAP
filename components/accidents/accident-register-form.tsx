@@ -25,7 +25,7 @@ const AccidentMapPicker = dynamic(
     ),
   {
     ssr: false,
-    loading: () => <div className="min-h-[490px] flex-1 bg-[#ddd]" />,
+    loading: () => <div className="min-h-[490px] flex-1 bg-muted" />,
   }
 );
 
@@ -204,7 +204,7 @@ export function AccidentRegisterForm({ drivers }: AccidentRegisterFormProps) {
               地図から地点を選択
             </p>
             <p className="pt-0.5 text-[11px] leading-[16.5px] text-[#6a7282]">
-              地図上をクリックしてピンを立ててください
+              現在地付近を開きます。事故地点をタップしてピンを合わせてください
             </p>
           </div>
           <AccidentMapPicker

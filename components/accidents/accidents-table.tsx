@@ -113,7 +113,7 @@ export function AccidentsTable() {
     <div className="overflow-hidden rounded-lg border border-black/10 bg-white">
       <Table>
         <TableHeader>
-          <TableRow className="border-black/10 bg-[#f9fafb] hover:bg-[#f9fafb]">
+          <TableRow className="border-black/10 bg-muted hover:bg-muted">
             <TableHead className="h-[74px] px-4 text-[11px] font-medium text-[#6a7282]">
               No.
             </TableHead>
@@ -158,7 +158,7 @@ export function AccidentsTable() {
                 <TableCell className="px-4">
                   <Badge
                     variant="outline"
-                    className="h-auto rounded border-[#e5e7eb] bg-[#f3f4f6] px-2 py-0.5 text-xs font-medium text-[#4a5565]"
+                    className="h-auto rounded border-[#e5e7eb] bg-muted px-2 py-0.5 text-xs font-medium text-[#4a5565]"
                   >
                     {accident.type}
                   </Badge>

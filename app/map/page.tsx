@@ -5,7 +5,7 @@ import { MapPanelHeader } from "@/components/map/map-panel-header";
 export default function MapPage() {
   return (
     <AppShell>
-      <div className="flex flex-1 flex-col bg-[#f9fafb]">
+      <div className="flex flex-1 flex-col bg-background">
         <MapPanelHeader />
         <div className="p-4">
           <AccidentMapAccordion />
