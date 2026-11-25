@@ -29,6 +29,7 @@ async function main() {
         password: "NotARealAccount-12345!",
       }),
     }));
+    
     assert.equal(signup.status, 400);
     assert.equal((await signup.json()).code, "EMAIL_PASSWORD_SIGN_UP_DISABLED");
     console.log("PASS: DB schema, anonymous session, and disabled public signup");

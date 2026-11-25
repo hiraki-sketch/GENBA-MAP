@@ -1,22 +1,36 @@
-"use client";
 
 import Image from "next/image";
-import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import type { MapFilter } from "@/components/map/map-view";
 import { cn } from "@/lib/utils";
 
-const filters = ["すべて", "未対応", "対応中", "対応済"] as const;
+const filters: MapFilter[] = [
+  "すべて",
+  "未対応",
+  "対応中",
+  "対応済",
+];
 
-type MapFilter = (typeof filters)[number];
+type MapPanelHeaderProps = {
+  status: MapFilter;
+  onStatusChange: (status: MapFilter) => void;
+  isNearbySearch: boolean;
+  onClearNearbySearch: () => void;
+};
 
-export function MapPanelHeader() {
-  const [activeFilter, setActiveFilter] = useState<MapFilter>("すべて");
-
+export function MapPanelHeader({
+  status,
+  onStatusChange,
+  isNearbySearch,
+  onClearNearbySearch,
+}: MapPanelHeaderProps) {
   return (
     <div className="flex flex-col border-b border-black/10 p-4">
-      <h1 className="text-sm font-semibold leading-5 text-[#101828]">マップ</h1>
+      <h1 className="text-sm font-semibold leading-5 text-[#101828]">
+        マップ
+      </h1>
 
       <div className="relative mt-3 w-full max-w-[255px]">
         <span className="pointer-events-none absolute top-1/2 left-2.5 size-[13px] -translate-y-1/2 overflow-hidden">
@@ -29,6 +43,7 @@ export function MapPanelHeader() {
             unoptimized
           />
         </span>
+
         <Input
           type="search"
           placeholder="場所・ドライバーで検索"
@@ -38,14 +53,14 @@ export function MapPanelHeader() {
 
       <div className="mt-3 flex gap-1.5">
         {filters.map((filter) => {
-          const isActive = activeFilter === filter;
+          const isActive = status === filter;
 
           return (
             <Button
               key={filter}
               type="button"
               variant="outline"
-              onClick={() => setActiveFilter(filter)}
+              onClick={() => onStatusChange(filter)}
               className={cn(
                 "h-auto rounded px-2.5 py-1 text-[11px] font-medium leading-[16.5px]",
                 isActive
@@ -57,6 +72,16 @@ export function MapPanelHeader() {
             </Button>
           );
         })}
+        {isNearbySearch ? (
+            <Button
+    type="button"
+    variant="outline"
+    onClick={onClearNearbySearch}
+    className="h-auto rounded px-2.5 py-1 text-[11px] font-medium"
+  >
+    周辺検索を解除
+  </Button>
+) : null}
       </div>
     </div>
   );

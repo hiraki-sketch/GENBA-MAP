@@ -1,5 +1,3 @@
-"use client";
-
 import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";
 import {
@@ -95,7 +93,6 @@ export function AccidentMapPicker({
   position,
   onPositionChange,
 }: AccidentMapPickerProps) {
-  const [ready, setReady] = useState(false);
   const [mapCenter, setMapCenter] = useState<[number, number] | null>(null);
   const [locating, setLocating] = useState(true);
   const [locateError, setLocateError] = useState<string | null>(null);
@@ -119,20 +116,37 @@ export function AccidentMapPicker({
   }, []);
 
   useEffect(() => {
-    setReady(true);
+    let cancelled = false;
+
+    void readCurrentPosition()
+      .then((next) => {
+        if (!cancelled) {
+          setMapCenter(next);
+        }
+      })
+      .catch((error: unknown) => {
+        if (!cancelled) {
+          setLocateError(
+            error instanceof Error
+              ? error.message
+              : "現在地を取得できませんでした。"
+          );
+        }
+      })
+      .finally(() => {
+        if (!cancelled) {
+          setLocating(false);
+        }
+      });
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
-
-  useEffect(() => {
-    if (!ready) {
-      return;
-    }
-
-    void locate();
-  }, [locate, ready]);
 
   return (
     <div className="relative min-h-[490px] flex-1 bg-muted">
-      {ready && mapCenter ? (
+      {mapCenter ? (
         <MapContainer
           center={mapCenter}
           zoom={STREET_ZOOM}

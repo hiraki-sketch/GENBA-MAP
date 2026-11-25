@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 
+import { requireAdminSession } from "@/lib/auth-session";
 import { createDriver } from "@/lib/drivers";
 
 export type CreateDriverFormState = {
@@ -13,6 +14,12 @@ export async function createDriverAction(
   _prevState: CreateDriverFormState,
   formData: FormData
 ): Promise<CreateDriverFormState> {
+  const session = await requireAdminSession();
+
+  if (!session) {
+    return { error: "ドライバーを登録する権限がありません。" };
+  }
+
   const raw = formData.get("name");
   const name = typeof raw === "string" ? raw.trim() : "";
 
@@ -24,13 +31,22 @@ export async function createDriverAction(
     return { error: "氏名は80文字以内で入力してください。" };
   }
 
-  const driver = await createDriver(name);
-  if (!driver) {
-    return { error: "ドライバーの登録に失敗しました。" };
+  try {
+    const driver = await createDriver(name);
+
+    if (!driver) {
+      return { error: "ドライバーの登録に失敗しました。" };
+    }
+
+    revalidatePath("/settings");
+    revalidatePath("/accidents/new");
+
+    return { createdId: driver.id };
+  } catch (error) {
+    console.error("ドライバー登録に失敗しました。", error);
+
+    return {
+      error: "ドライバーを登録できませんでした。時間をおいて再度お試しください。",
+    };
   }
-
-  revalidatePath("/settings");
-  revalidatePath("/accidents/new");
-
-  return { createdId: driver.id };
 }

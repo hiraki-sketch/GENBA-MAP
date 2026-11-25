@@ -9,8 +9,8 @@
     "lint": "eslint",
     "db:up": "docker compose up -d",
     "db:migrate": "tsx scripts/migrate.ts",
-    "db:seed": "tsx scripts/migrate.ts --seed",
-    "auth:check": "tsx scripts/check-auth.ts"
+    "auth:check": "tsx scripts/check-auth.ts",
+    "auth:bootstrap": "tsx scripts/bootstrap-admin.ts"
   },
   "dependencies": {
     "better-auth": "1.7.5",
@@ -18,7 +18,7 @@
     "clsx": "2.1.1",
     "leaflet": "1.9.4",
     "lucide-react": "1.28.0",
-    "next": "16.3.0",
+    "next": "16.3.6",
     "pg": "^8.16.3",
     "radix-ui": "1.6.7",
     "react": "19.2.8",
@@ -36,9 +36,10 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
-    "eslint-config-next": "16.3.0",
+    "eslint-config-next": "16.3.6",
     "tailwindcss": "^4",
     "tsx": "^4.20.5",
     "typescript": "^5"
+    
   }
 }
