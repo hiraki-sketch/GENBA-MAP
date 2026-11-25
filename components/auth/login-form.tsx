@@ -2,19 +2,46 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { type FormEvent } from "react";
 import { Lock, Mail } from "lucide-react";
-
+import { useState, type FormEvent } from "react";
+import { authClient } from "@/lib/auth-client";
 import { AuthMark } from "@/components/auth/auth-mark";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 export function LoginForm() {
   const router = useRouter();
+  const [pending, setPending] = useState(false);
+  const [loginError, setLoginError] = useState<string | null>(null);
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    router.push("/");
+    const formData = new FormData(event.currentTarget);
+    const email = String(formData.get("email") ?? "").trim();
+    const password = String(formData.get("password") ?? "");
+    setPending(true);
+    setLoginError(null);
+    try {
+      const { error } = await authClient.signIn.email({
+        email,
+        password,
+        rememberMe: true,
+      });
+      if (error) {
+        setLoginError(
+          "メールアドレスまたはパスワードが正しくありません。"
+        );
+        return;
+      }
+      router.replace("/");
+      router.refresh();
+    } catch {
+      setLoginError(
+        "ログイン処理に失敗しました。もう一度お試しください。"
+      );
+    } finally {
+      setPending(false);
+    }
   }
 
   return (
@@ -25,7 +52,7 @@ export function LoginForm() {
           GENBA MAP
         </h1>
         <p className="mt-1.5 text-center text-[13px] tracking-[0.06em] text-[rgba(148,198,255,0.8)]">
-          現場マップ事故情報管理システム
+          事故情報管理システム
         </p>
 
         <form
@@ -54,18 +81,23 @@ export function LoginForm() {
           </div>
           <Button
             type="submit"
+            disabled={pending}
             className="h-[47px] w-full rounded-xl bg-[var(--splash-brand)] text-white hover:bg-[#c94700]"
           >
-            ログイン
+            {pending ? "ログイン中..." : "ログイン"}
           </Button>
           <Link
-            href="/login"
+            href="/reset-password"
             className="pt-1 text-center text-xs text-[rgba(148,198,255,0.7)] underline"
           >
             パスワードを忘れた場合
           </Link>
         </form>
-
+          {loginError ? (
+         <p role="alert" className="text-sm text-red-200">
+         {loginError}
+         </p>
+          ) : null}
         <p className="mt-5 text-center text-[13px] text-[rgba(148,198,255,0.8)]">
           アカウントをお持ちでない方は{" "}
           <Link href="/signup" className="font-medium text-[#fb923c] underline">

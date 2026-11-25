@@ -1,14 +1,12 @@
 import { AppShell } from "@/components/layout/app-shell";
-import { AccidentMapAccordion } from "@/components/map/accident-map-accordion";
-import { MapPanelHeader } from "@/components/map/map-panel-header";
+import { MapView } from "@/components/map/map-view";
 
 export default function MapPage() {
   return (
     <AppShell>
-      <div className="flex flex-1 flex-col bg-background">
-        <MapPanelHeader />
-        <div className="p-4">
-          <AccidentMapAccordion />
+      <div className="flex min-h-0 flex-1 flex-col bg-background">
+        <MapView />
+        <div className="min-h-[420px] flex-1">
         </div>
       </div>
     </AppShell>

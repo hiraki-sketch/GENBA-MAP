@@ -4,7 +4,6 @@ import { Client } from "pg";
 
 const rootDir = process.cwd();
 const migrationsDir = path.join(rootDir, "db", "migrations");
-const seedPath = path.join(rootDir, "db", "seed.sql");
 
 function loadEnvFile(filename: string) {
   const filePath = path.join(rootDir, filename);
@@ -85,21 +84,12 @@ async function migrate(client: Client) {
   }
 }
 
-async function seed(client: Client) {
-  await runSqlFile(client, seedPath);
-  console.log("seed  db/seed.sql");
-}
-
 async function main() {
-  const shouldSeed = process.argv.includes("--seed");
   const client = new Client({ connectionString });
 
   await client.connect();
   try {
     await migrate(client);
-    if (shouldSeed) {
-      await seed(client);
-    }
   } finally {
     await client.end();
   }

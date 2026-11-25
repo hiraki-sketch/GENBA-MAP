@@ -27,7 +27,7 @@ export function SplashView() {
         </h1>
 
         <p className="mt-6 text-sm tracking-[0.08em] text-[rgba(180,215,255,0.9)]">
-          現場マップ事故情報管理システム
+          事故情報管理システム
         </p>
 
         <div className="mt-10 flex w-full max-w-[348px] flex-col gap-3">
@@ -56,7 +56,7 @@ export function SplashView() {
       <div className="absolute right-4 bottom-4 z-10 flex items-center gap-1.5 rounded-md bg-white/90 px-3 py-1.5 shadow-sm motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-left-8 motion-safe:delay-300 motion-safe:duration-700">
         <MapPin className="size-3 text-[#111827]" />
         <span className="text-[11px] text-[#111827]">
-          愛媛ルート 今治 → 松山 → 宇和島
+          愛媛ルート 西条 → 松山 → 宇和島
         </span>
       </div>
     </div>

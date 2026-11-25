@@ -1,6 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { requireSession } from "@/lib/auth-session";
 
 import {
   accidentTypes,
@@ -20,6 +21,7 @@ function readString(formData: FormData, key: string) {
 
 function readOptionalNumber(formData: FormData, key: string) {
   const value = readString(formData, key);
+
   if (!value) {
     return null;
   }
@@ -32,6 +34,8 @@ export async function createAccidentAction(
   _prevState: CreateAccidentFormState,
   formData: FormData
 ): Promise<CreateAccidentFormState> {
+  
+  const session = await requireSession();
   const occurredOn = readString(formData, "occurredOn");
   const locationName = readString(formData, "locationName");
   const accidentType = readString(formData, "accidentType");
@@ -39,33 +43,43 @@ export async function createAccidentAction(
   const driverId = readString(formData, "driverId");
   const lat = readOptionalNumber(formData, "lat");
   const lng = readOptionalNumber(formData, "lng");
-
+  
   if (!occurredOn || !locationName) {
     return { error: "発生日と発生場所を入力してください。" };
   }
-
   if (!accidentTypes.includes(accidentType as AccidentType)) {
     return { error: "事故種別を選択してください。" };
   }
-
   if (!driverId) {
     return { error: "担当ドライバーを選択してください。" };
   }
 
-  const driver = await getDriverById(driverId);
-  if (!driver) {
-    return { error: "選択したドライバーが見つかりません。" };
-  }
+  try {
+    const driver = await getDriverById(driverId);
 
-  await createAccident({
-    occurredOn,
-    locationName,
-    accidentType: accidentType as AccidentType,
-    summary: summary || null,
-    lat,
-    lng,
-    driverId,
-  });
+    if (!driver) {
+      return { error: "選択したドライバーが見つかりません。" };
+    }
+
+    await createAccident({
+      occurredOn,
+      locationName,
+      accidentType: accidentType as AccidentType,
+      summary: summary || null,
+      lat,
+      lng,
+      driverId,
+      createdBy: session.user.id,
+    });
+  } catch (error) {
+    console.error("事故登録に失敗しました。", error);
+
+    return {
+      error:
+        "事故を登録できませんでした。時間をおいて再度お試しください。",
+    };
+  }
 
   redirect("/accidents");
 }
+  

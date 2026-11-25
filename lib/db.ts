@@ -73,7 +73,7 @@ export async function query<T extends QueryResultRow = QueryResultRow>(
     const result =
       params === undefined
         ? await pool.query<T>(text)
-        : await pool.query<T>(text, params);
+        : await pool.query<T>(text,params);
     return result.rows;
   } catch (error) {
     throw toDbError(error);

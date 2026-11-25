@@ -1,5 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
+import type {
+  AccidentRow,
+  AccidentStatus,
+} from "@/lib/accidents";
 
 import { Badge } from "@/components/ui/badge";
 import {
@@ -12,83 +16,9 @@ import {
 } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
 
-type AccidentStatus = "未対応" | "対応中" | "対応済";
-
-type Accident = {
-  id: string;
-  date: string;
-  location: string;
-  type: string;
-  driver: string;
-  status: AccidentStatus;
+type AccidentsTableProps = {
+  accidents: AccidentRow[];
 };
-
-const accidents: Accident[] = [
-  {
-    id: "ACC-008",
-    date: "2026-08-05",
-    location: "圏央道 桶川加納IC付近",
-    type: "接触",
-    driver: "渡辺 浩",
-    status: "未対応",
-  },
-  {
-    id: "ACC-007",
-    date: "2026-08-03",
-    location: "名神高速道路 栗東IC付近",
-    type: "その他",
-    driver: "小林 修",
-    status: "未対応",
-  },
-  {
-    id: "ACC-006",
-    date: "2026-08-01",
-    location: "仙台東部道路 仙台東IC付近",
-    type: "単独",
-    driver: "高橋 裕司",
-    status: "未対応",
-  },
-  {
-    id: "ACC-005",
-    date: "2026-07-31",
-    location: "東名高速道路 浜松SA付近",
-    type: "出会い頭",
-    driver: "伊藤 次郎",
-    status: "対応中",
-  },
-  {
-    id: "ACC-004",
-    date: "2026-07-28",
-    location: "阪神高速3号 生田川IC付近",
-    type: "追突",
-    driver: "山田 太郎",
-    status: "対応中",
-  },
-  {
-    id: "ACC-003",
-    date: "2026-07-24",
-    location: "国道1号線 静岡市葵区内",
-    type: "単独",
-    driver: "鈴木 誠",
-    status: "対応済",
-  },
-  {
-    id: "ACC-002",
-    date: "2026-07-18",
-    location: "首都高速3号 用賀IC付近",
-    type: "接触",
-    driver: "佐藤 健一",
-    status: "対応済",
-  },
-  {
-    id: "ACC-001",
-    date: "2026-07-10",
-    location: "東名高速道路 海老名SA付近",
-    type: "追突",
-    driver: "田中 浩二",
-    status: "対応済",
-  },
-];
 
 const statusStyles: Record<
   AccidentStatus,
@@ -108,7 +38,9 @@ const statusStyles: Record<
   },
 };
 
-export function AccidentsTable() {
+export function AccidentsTable( {
+  accidents,
+}: AccidentsTableProps) {
   return (
     <div className="overflow-hidden rounded-lg border border-black/10 bg-white">
       <Table>
@@ -138,6 +70,7 @@ export function AccidentsTable() {
           </TableRow>
         </TableHeader>
         <TableBody>
+
           {accidents.map((accident) => {
             const status = statusStyles[accident.status];
 
@@ -147,24 +80,28 @@ export function AccidentsTable() {
                 className="h-[69px] border-black/10 hover:bg-transparent"
               >
                 <TableCell className="px-4 font-mono text-xs text-[#99a1af]">
-                  {accident.id}
+                  {accident.public_id}
                 </TableCell>
+
                 <TableCell className="px-4 font-mono text-sm text-[#364153]">
-                  {accident.date}
+                  {accident.occurred_on}
                 </TableCell>
+
                 <TableCell className="max-w-[200px] truncate px-4 text-sm text-[#101828]">
-                  {accident.location}
+                  {accident.location_name ?? "未設定"}
                 </TableCell>
+
                 <TableCell className="px-4">
                   <Badge
                     variant="outline"
                     className="h-auto rounded border-[#e5e7eb] bg-muted px-2 py-0.5 text-xs font-medium text-[#4a5565]"
                   >
-                    {accident.type}
+                    {accident.accident_type ?? "未設定"}
                   </Badge>
                 </TableCell>
+                
                 <TableCell className="px-4 text-sm text-[#364153]">
-                  {accident.driver}
+                  {accident.driver_name ?? "未設定"}
                 </TableCell>
                 <TableCell className="px-4">
                   <Badge
@@ -187,7 +124,7 @@ export function AccidentsTable() {
                 </TableCell>
                 <TableCell className="px-4">
                   <Link
-                    href={`/accidents/${accident.id}`}
+                    href={`/accidents/${accident.public_id}`}
                     className="inline-flex items-center gap-0.5 text-xs font-medium text-[#4a5565] underline"
                   >
                     詳細

@@ -1,4 +1,6 @@
+
 import { query } from "@/lib/db";
+
 
 export const accidentTypes = [
   "追突",
@@ -12,6 +14,15 @@ export const accidentStatuses = ["未対応", "対応中", "対応済"] as const
 
 export type AccidentType = (typeof accidentTypes)[number];
 export type AccidentStatus = (typeof accidentStatuses)[number];
+export const NearbyRadii = [500, 1000, 3000] as const;
+export type NearbyRadius = (typeof NearbyRadii)[number];
+
+export type AccidentMapBounds = {
+  west: number;
+  south: number;
+  east: number;
+  north: number;
+};
 
 export type AccidentRow = {
   id: string;
@@ -37,6 +48,12 @@ export type AccidentMapPoint = {
   status: AccidentStatus;
 };
 
+export type NearbyAccidentSearch = {
+  lat: number;
+  lng: number;
+  radiusMeters: NearbyRadius;
+  status?: AccidentStatus;
+}
 const accidentSelect = `
   a.id,
   a.public_id,
@@ -65,7 +82,10 @@ export async function listAccidents() {
   );
 }
 
-export async function listAccidentMapPoints() {
+export async function listAccidentMapPoints
+(bounds?: AccidentMapBounds,
+  status?: AccidentStatus
+) {
   return query<AccidentMapPoint>(
     `
       SELECT
@@ -75,7 +95,59 @@ export async function listAccidentMapPoints() {
         status
       FROM accidents
       WHERE location IS NOT NULL
+        AND CASE
+          WHEN $1::float8 IS NULL THEN TRUE
+          ELSE ST_Intersects(
+            location,
+            ST_MakeEnvelope($1, $2, $3, $4, 4326)::geography
+          )
+        END
+        AND CASE
+          WHEN $5::text IS NULL THEN TRUE
+          ELSE status ::text =$5::text
+        END
+    `,
+    [
+      bounds?.west ?? null,
+      bounds?.south ?? null,
+      bounds?.east ?? null,
+      bounds?.north ?? null,
+      status ?? null,
+    ]
+  );
+}
+export async function listNearbyAccidentMapPoints({
+
+  lat,
+  lng,
+  radiusMeters,
+  status,
+}: NearbyAccidentSearch) {
+  return query<AccidentMapPoint>(
     `
+    SELECT
+    public_id,
+    ST_Y(location::geometry) AS lat,
+    ST_X(location::geometry) AS lng,
+    status
+    FROM accidents
+    WHERE location IS NOT NULL 
+    AND ST_DWithin(
+      location,
+      ST_SetSRID(ST_MakePoint($2,$1),4326)::geography,
+      $3
+    )
+    AND (
+      $4::text IS null
+      OR status::text = $4::text
+    )
+    `,
+    [
+      lat,
+      lng,
+      radiusMeters,
+      status ?? null,
+    ]
   );
 }
 

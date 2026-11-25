@@ -57,7 +57,12 @@ function getActiveHref(pathname: string) {
   return matches.sort((a, b) => b.href.length - a.href.length)[0]?.href;
 }
 
-export function Sidebar() {
+type SidebarProps = {
+  userName: string;
+  userEmail: string;
+};
+
+export function Sidebar({ userName, userEmail }: SidebarProps) {
   const pathname = usePathname();
   const activeHref = getActiveHref(pathname);
   const activeIndex = navItems.findIndex((item) => item.href === activeHref);
@@ -126,7 +131,7 @@ export function Sidebar() {
         </SidebarMenu>
       </SidebarContent>
       <SidebarFooter className="mt-auto border-t border-sidebar-border p-0">
-        <SidebarUser />
+        <SidebarUser name={userName} email={userEmail} />
       </SidebarFooter>
     </ShadcnSidebar>
   );

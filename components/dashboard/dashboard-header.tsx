@@ -5,7 +5,7 @@ export function DashboardHeader() {
           運用状況
         </p>
         <h1 className="text-[28px] font-semibold leading-8 tracking-tight text-foreground">
-          現場マップ事故情報管理システム
+          事故情報管理システム
         </h1>
       </header>
   );
